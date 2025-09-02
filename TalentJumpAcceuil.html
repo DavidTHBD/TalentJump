@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TalentJumpMusic</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+        :root {
+            --primary-color: #000000;
+            --secondary-color: #00F7FF;
+            --dark: #111111;
+            --light: #FFFFFF;
+            --gray: #f5f5f5;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: var(--gray);
+        }
+
+        /* Navigation */
+        nav {
+            background-color: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            padding: 1rem;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .nav-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 3rem;
+        }
+
+        .nav-links a {
+            color: var(--light);
+            text-decoration: none;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.9rem;
+            position: relative;
+            padding: 0.5rem 0;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            background: linear-gradient(45deg, rgba(0,0,0,0.7), rgba(0,0,0,0.3)), url("https://giffiles.alphacoders.com/308/30816.gif");
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: var(--light);
+            padding: 1rem;
+            position: relative;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            z-index: 2;
+        }
+
+        .hero-content h1 {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            animation: fadeInDown 1s ease;
+            font-weight: 700;
+        }
+
+        .hero-content p {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            animation: fadeInUp 1s ease;
+            opacity: 0.9;
+        }
+
+        .cta-button {
+            padding: 1.2rem 2.5rem;
+            background: linear-gradient(45deg, var(--primary-color), #ff4d4d);
+            color: var(--light);
+            border: none;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(255,0,0,0.2);
+            animation: fadeInUp 1s ease 0.5s;
+            animation-fill-mode: both;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 20px rgba(255,0,0,0.3);
+            background: linear-gradient(45deg, #ff4d4d, var(--secondary-color));
+        }
+
+        /* Modal Styles */
+        .modal {
+            opacity: 0;
+            visibility: hidden;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.7);
+            background-color: white;
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            width: 90%;
+            max-width: 1000px;
+            z-index: 1000;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .modal.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        #modal-overlay {
+            opacity: 0;
+            visibility: hidden;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.8);
+            backdrop-filter: blur(5px);
+            z-index: 999;
+            transition: all 0.3s ease-in-out;
+        }
+
+        #modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .projects-button {
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            padding: 1rem 2rem;
+            border-radius: 30px;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .projects-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 20px rgba(0,0,0,0.2);
+        }
+
+        /* Animations */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Modal Content Styles */
+        .modal-content {
+            display: flex;
+            gap: 2.5rem;
+            align-items: center;
+        }
+
+        .modal-image {
+            flex: 0 0 40%;
+        }
+
+        .modal-image img {
+            width: 100%;
+            height: 500px;
+            object-fit: cover;
+            border-radius: 30px;
+            box-shadow: 0 20px 20px rgba(0,0,0,0.1);
+        }
+
+        .modal-text {
+            flex: 1;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-header h2 {
+            color: var(--dark);
+            font-size: 2.2rem;
+            margin: 0;
+            font-weight: 700;
+        }
+
+        .close-button {
+            background: none;
+            border: none;
+            font-size: 2rem;
+            cursor: pointer;
+            color: var(--dark);
+            transition: transform 0.3s ease;
+        }
+
+        .close-button:hover {
+            transform: rotate(90deg);
+        }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2.5rem;
+            margin-top: 2rem;
+        }
+
+        .skills-section h3 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .skills-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .skills-list li {
+            margin-bottom: 0.8rem;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links {
+                gap: 1.5rem;
+            }
+
+            .nav-links a {
+                font-size: 0.8rem;
+            }
+
+            .hero-content h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero-content p {
+                font-size: 1.2rem;
+            }
+
+            .modal-content {
+                flex-direction: column;
+            }
+
+            .modal-image {
+                flex: none;
+            }
+
+            .skills-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-content">
+            <div class="nav-links">
+                <a href="TalentJumpAcceuil.html">Acceuil</a>
+                <a href="TalentJumpCandidats.html">Candidats</a>
+                <a href="TalentJumpAjouter.html">Ajouter</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Talent Jump Music</h1>
+            <p></p>
+            <button class="cta-button">Découvrir Talent Jump tool</button>
+        </div>
+    </section>
+
+    <!-- Modal Pres -->
+    <div id="presentation-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-image">
+                 <img src="C:\Users\ferar\Desktop\TalentJump-project\tj2.png" 
+                     alt="Talent jump 2 png">
+            </div>
+            <div class="modal-text">
+                <div class="modal-header">
+                    <h2>Talent Jump Music</h2>	
+                    <button class="close-button" id="close-modal">&times;</button>
+                </div>
+                <p style="font-size: 1.1rem; line-height: 1.6; color: var(--dark); margin-bottom: 1.5rem;">
+                    Talent Jump est un studio international innovant qui sert de pont entre artistes talentueux et labels musicaux prestigieux. Notre plateforme offre aux chanteurs et musiciens émergents l'opportunité unique de présenter leur art à des professionnels de l'industrie musicale à travers le monde. 
+                    Fondée en 2018, notre entreprise combine expertise artistique et technologie de pointe pour identifier les talents authentiques. Nous proposons des sessions d'enregistrement professionnelles, du coaching vocal et instrumental, ainsi qu'un accompagnement personnalisé dans le développement de carrière. 
+                    Notre réseau mondial de partenaires comprend des labels indépendants et majors, permettant aux artistes de trouver la structure qui correspond parfaitement à leur univers musical et leurs ambitions.
+				</p>
+				<p style="font-size: 1.1rem; line-height: 1.6; color: green; margin-bottom: 1.5rem;">
+				Cette outils permet à tous les responsables ressource humaine de gerer les candidatures.
+				</p>
+				
+                <div style="margin-top: 2rem;">
+                    <a href="mesprojets.html" class="projects-button">
+                        Voir les candidats
+                    </a>
+                </div>
+				<div style="margin-top: 2rem;">
+				<a href="ajouter.html" class="projects-button">
+                        ajouter un candidat
+                    </a>
+				</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Overlay pour le modal -->
+    <div id="modal-overlay"></div>
+
+    <script>
+        // Gestion du modal
+        const modal = document.getElementById('presentation-modal');
+        const overlay = document.getElementById('modal-overlay');
+        const closeButton = document.getElementById('close-modal');
+        const ctaButton = document.querySelector('.cta-button');
+
+        ctaButton.addEventListener('click', () => {
+            overlay.style.visibility = 'visible';
+            modal.style.visibility = 'visible';
+            setTimeout(() => {
+                overlay.classList.add('active');
+                modal.classList.add('active');
+            }, 10);
+            document.body.style.overflow = 'hidden';
+        });
+
+        function closeModal() {
+            overlay.classList.remove('active');
+            modal.classList.remove('active');
+            setTimeout(() => {
+                overlay.style.visibility = 'hidden';
+                modal.style.visibility = 'hidden';
+                document.body.style.overflow = 'auto';
+            }, 300);
+        }
+
+        closeButton.addEventListener('click', closeModal);
+        overlay.addEventListener('click', closeModal);
+
+        // Fermeture de la modale avec la touche Echap
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && modal.classList.contains('active')) {
+                closeModal();
+            }
+        });
+
+        // Effet sur le hero
+        window.addEventListener('scroll', () => {
+            const hero = document.querySelector('.hero');
+            const scrolled = window.pageYOffset;
+            hero.style.backgroundPositionY = scrolled * 0.5 + 'px';
+        });
+    </script>
+</body>
+</html>

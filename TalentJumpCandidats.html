@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Candidats - TalentJumpMusic</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #000000;
+            --secondary-color: #ff4d4d;
+            --dark: #111111;
+            --light: #FFFFFF;
+            --gray: #f5f5f5;
+            --card-bg: #1a1a1a;
+            --card-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            --input-bg: #2a2a2a;
+            --input-border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: var(--dark);
+            color: var(--light);
+            min-height: 100vh;
+            background: linear-gradient(45deg, rgba(0,0,0,0.9), rgba(0,0,0,0.7)), url("https://giffiles.alphacoders.com/308/30816.gif");
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+
+        /* Navigation */
+        nav {
+            background-color: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            padding: 1rem;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .nav-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 3rem;
+        }
+
+        .nav-links a {
+            color: var(--light);
+            text-decoration: none;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.9rem;
+            position: relative;
+            padding: 0.5rem 0;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Candidat Section */
+        .candidat-section {
+            padding: 8rem 2rem 4rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-align: center;
+            background: linear-gradient(90deg, var(--light), var(--secondary-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: fadeInDown 1s ease;
+        }
+
+        .candidat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            animation: fadeInUp 1s ease;
+        }
+
+        .candidat-card {
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+        }
+
+        .candidat-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(255, 77, 77, 0.2);
+            cursor: pointer;
+        }
+
+        .candidat-image {
+            height: 150px;
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 3rem;
+            color: var(--light);
+            font-weight: 600;
+        }
+
+        .candidat-info {
+            padding: 1.5rem;
+        }
+
+        .candidat-info h3 {
+            font-size: 1.4rem;
+            margin-bottom: 0.8rem;
+            color: var(--light);
+        }
+
+        .candidat-info p {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 0.8rem;
+        }
+
+        .candidat-status {
+            display: inline-block;
+            font-size: 0.8rem;
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            margin-top: 0.5rem;
+        }
+
+        .status-en-attente {
+            background-color: #FFC107;
+            color: var(--dark);
+        }
+
+        .status-accepte {
+            background-color: #28A745;
+            color: var(--light);
+        }
+
+        .status-refuse {
+            background-color: #DC3545;
+            color: var(--light);
+        }
+
+        /* Modal Styles */
+        .modal {
+            opacity: 0;
+            visibility: hidden;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.7);
+            background-color: var(--card-bg);
+            padding: 2.5rem;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            width: 90%;
+            max-width: 600px;
+            z-index: 1000;
+            transition: all 0.3s ease-in-out;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--light);
+        }
+
+        .modal.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 1rem;
+        }
+
+        .modal-header h2 {
+            font-size: 1.8rem;
+            background: linear-gradient(90deg, var(--light), var(--secondary-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .modal-content p {
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        #modal-overlay {
+            opacity: 0;
+            visibility: hidden;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.8);
+            backdrop-filter: blur(5px);
+            z-index: 999;
+            transition: all 0.3s ease-in-out;
+        }
+
+        #modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .close-button {
+            background: none;
+            border: none;
+            font-size: 2rem;
+            cursor: pointer;
+            color: var(--light);
+            transition: transform 0.3s ease, color 0.3s ease;
+        }
+
+        .close-button:hover {
+            transform: rotate(90deg);
+            color: var(--secondary-color);
+        }
+
+        .modal-status {
+            display: inline-block;
+            font-size: 1rem;
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            margin-top: 1rem;
+        }
+
+        /* Card Actions */
+        .card-actions {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            display: flex;
+            gap: 0.5rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .candidat-card:hover .card-actions {
+            opacity: 1;
+        }
+
+        .card-action-btn {
+            background-color: rgba(0, 0, 0, 0.7);
+            color: var(--light);
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .card-action-btn:hover {
+            background-color: var(--secondary-color);
+            transform: scale(1.1);
+        }
+
+        /* Buttons */
+        .action-btn {
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .edit-btn {
+            background-color: #2196F3;
+            color: var(--light);
+        }
+
+        .edit-btn:hover {
+            background-color: #0d8aee;
+        }
+
+        .delete-btn {
+            background-color: #DC3545;
+            color: var(--light);
+        }
+
+        .delete-btn:hover {
+            background-color: #c82333;
+        }
+
+        /* Animations */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .candidat-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .modal {
+                width: 95%;
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-content">
+            <div class="nav-links">
+                <a href="TalentJumpAcceuil.html">Acceuil</a>
+                <a href="TalentJumpCandidats.html">Candidats</a>
+                <a href="TalentJumpAjouter.html">Ajouter</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Candidat Section -->
+    <section class="candidat-section">
+        <h1 class="section-title">Nos Candidats</h1>
+        <div class="candidat-grid" id="candidat-grid">
+            <!-- Les cartes de candidats sont générées par le backend -->
+            <?php foreach ($candidats as $candidat): ?>
+                <div class="candidat-card" data-id="<?php echo $candidat['id']; ?>">
+                    <div class="candidat-image">
+                        <?php echo substr($candidat['nom'], 0, 1); ?>
+                    </div>
+                    <div class="card-actions">
+                        <a href="edit_candidat.php?id=<?php echo $candidat['id']; ?>" class="card-action-btn">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        <a href="delete_candidat.php?id=<?php echo $candidat['id']; ?>" class="card-action-btn" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce candidat ?');">
+                            <i class="fas fa-trash-alt"></i>
+                        </a>
+                    </div>
+                    <div class="candidat-info">
+                        <h3><?php echo $candidat['nom']; ?></h3>
+                        <p><?php echo $candidat['email']; ?></p>
+                        <p>Poste visé: <?php echo $candidat['poste']; ?></p>
+                        <div class="candidat-status status-<?php echo $candidat['status']; ?>">
+                            <?php 
+                                switch($candidat['status']) {
+                                    case 'en_attente':
+                                        echo 'En attente d\'entretien';
+                                        break;
+                                    case 'accepte':
+                                        echo 'Accepté';
+                                        break;
+                                    case 'refuse':
+                                        echo 'Refusé';
+                                        break;
+                                }
+                            ?>
+                        </div>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    </section>
+
+    <!-- Modal Détails du Candidat -->
+    <div id="candidat-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modal-nom"></h2>
+                <button class="close-button" id="close-modal">&times;</button>
+            </div>
+            <p id="modal-email"></p>
+            <p id="modal-age"></p>
+            <p id="modal-poste"></p>
+            <div id="modal-status" class="modal-status"></div>
+            
+            <div style="display: flex; justify-content: space-between; margin-top: 2rem;">
+                <a id="edit-link" href="#" class="action-btn edit-btn">
+                    <i class="fas fa-edit"></i> Modifier
+                </a>
+                <a id="delete-link" href="#" class="action-btn delete-btn" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce candidat ?');">
+                    <i class="fas fa-trash-alt"></i> Supprimer
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Overlay pour le modal -->
+    <div id="modal-overlay"></div>
+
+    <script>
+        // Uniquement pour la gestion du modal et localStorage
+        document.addEventListener('DOMContentLoaded', function() {
+            // Éléments DOM pour le modal
+            const modal = document.getElementById("candidat-modal");
+            const overlay = document.getElementById("modal-overlay");
+            const closeButton = document.getElementById("close-modal");
+            const editLink = document.getElementById("edit-link");
+            const deleteLink = document.getElementById("delete-link");
+            
+            // Ajouter des écouteurs d'événements pour ouvrir le modal
+            const candidatCards = document.querySelectorAll('.candidat-card');
+            candidatCards.forEach(card => {
+                card.addEventListener('click', function(e) {
+                    // Ne pas ouvrir le modal si on clique sur les boutons d'action
+                    if (e.target.closest('.card-actions')) return;
+                    
+                    const candidatId = this.dataset.id;
+                    const nom = this.querySelector('h3').textContent;
+                    const email = this.querySelector('p').textContent;
+                    const poste = this.querySelectorAll('p')[1].textContent;
+                    const statusElement = this.querySelector('.candidat-status');
+                    const status = statusElement.textContent;
+                    const statusClass = statusElement.classList[1];
+                    
+                    // Remplir le modal avec les données du candidat
+                    document.getElementById("modal-nom").textContent = nom;
+                    document.getElementById("modal-email").textContent = email;
+                    document.getElementById("modal-poste").textContent = poste;
+                    
+                    const modalStatus = document.getElementById("modal-status");
+                    modalStatus.textContent = status;
+                    modalStatus.className = "modal-status " + statusClass;
+                    
+                    // Mettre à jour les liens d'action
+                    editLink.href = "edit_candidat.php?id=" + candidatId;
+                    deleteLink.href = "delete_candidat.php?id=" + candidatId;
+                    
+                    // Afficher le modal
+                    openModal();
+                });
+            });
+            
+            // Fonction pour ouvrir le modal
+            function openModal() {
+                overlay.style.visibility = 'visible';
+                modal.style.visibility = 'visible';
+                setTimeout(() => {
+                    overlay.classList.add('active');
+                    modal.classList.add('active');
+                }, 10);
+                document.body.style.overflow = 'hidden';
+            }
+            
+            // Fonction pour fermer le modal
+            function closeModal() {
+                overlay.classList.remove('active');
+                modal.classList.remove('active');
+                setTimeout(() => {
+                    overlay.style.visibility = 'hidden';
+                    modal.style.visibility = 'hidden';
+                    document.body.style.overflow = 'auto';
+                }, 300);
+            }
+            
+            // Écouteurs d'événements pour fermer le modal
+            closeButton.addEventListener('click', closeModal);
+            overlay.addEventListener('click', closeModal);
+            
+            // Fermer le modal avec la touche Escape
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && overlay.classList.contains('active')) {
+                    closeModal();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

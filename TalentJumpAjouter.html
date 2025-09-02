@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ajouter un Candidat - TalentJumpMusic</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #000000;
+            --secondary-color: #ff4d4d;
+            --dark: #111111;
+            --light: #FFFFFF;
+            --gray: #f5f5f5;
+            --card-bg: #1a1a1a;
+            --card-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            --input-bg: #2a2a2a;
+            --input-border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: var(--dark);
+            color: var(--light);
+            min-height: 100vh;
+            background: linear-gradient(45deg, rgba(0,0,0,0.9), rgba(0,0,0,0.7)), url("https://giffiles.alphacoders.com/308/30816.gif");
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+
+        /* Navigation */
+        nav {
+            background-color: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            padding: 1rem;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .nav-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 3rem;
+        }
+
+        .nav-links a {
+            color: var(--light);
+            text-decoration: none;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.9rem;
+            position: relative;
+            padding: 0.5rem 0;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Form Section */
+        .form-section {
+            padding: 8rem 2rem 4rem;
+            max-width: 800px;
+            margin: 0 auto;
+            animation: fadeInUp 1s ease;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-align: center;
+            background: linear-gradient(90deg, var(--light), var(--secondary-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: fadeInDown 1s ease;
+        }
+
+        .form-container {
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            box-shadow: var(--card-shadow);
+            padding: 2.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            font-size: 1rem;
+            background-color: var(--input-bg);
+            border: 1px solid var(--input-border);
+            border-radius: 8px;
+            color: var(--light);
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 2px rgba(255, 77, 77, 0.2);
+        }
+
+        .form-select {
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 1em;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            color: var(--light);
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(255,0,0,0.2);
+            margin-top: 1rem;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 20px rgba(255,0,0,0.3);
+            background: linear-gradient(45deg, var(--secondary-color), var(--primary-color));
+        }
+
+        /* Alert */
+        .alert {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            font-weight: 500;
+            display: none;
+        }
+
+        .alert-success {
+            background-color: rgba(40, 167, 69, 0.2);
+            border: 1px solid #28A745;
+            color: #28A745;
+        }
+
+        .alert-error {
+            background-color: rgba(220, 53, 69, 0.2);
+            border: 1px solid #DC3545;
+            color: #DC3545;
+        }
+
+        /* Animations */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .form-section {
+                padding: 7rem 1rem 3rem;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .form-container {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-content">
+            <div class="nav-links">
+                <a href="TalentJumpAcceuil.html">Acceuil</a>
+                <a href="TalentJumpCandidats.html">Candidats</a>
+                <a href="TalentJumpAjouter.html">Ajouter</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Form Section -->
+    <section class="form-section">
+        <h1 class="section-title">Ajouter un Candidat</h1>
+        
+        <div id="alert-message" class="alert"></div>
+        
+        <div class="form-container">
+            <form id="candidat-form">
+                <div class="form-group">
+                    <label for="nom">Nom complet</label>
+                    <input type="text" id="nom" name="nom" class="form-control" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" class="form-control" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="age">Âge</label>
+                    <input type="number" id="age" name="age" min="18" max="100" class="form-control" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="poste">Poste visé</label>
+                    <input type="text" id="poste" name="poste" class="form-control" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="status">Statut</label>
+                    <select id="status" name="status" class="form-control form-select" required>
+                        <option value="en_attente">En attente d'entretien</option>
+                        <option value="accepte">Accepté</option>
+                        <option value="refuse">Refusé</option>
+                    </select>
+                </div>
+                
+                <button type="submit" class="submit-btn">Ajouter le candidat</button>
+            </form>
+        </div>
+    </section>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('candidat-form');
+            const alertMessage = document.getElementById('alert-message');
+            
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Récupérer les valeurs du formulaire
+                const nom = document.getElementById('nom').value;
+                const email = document.getElementById('email').value;
+                const age = parseInt(document.getElementById('age').value);
+                const poste = document.getElementById('poste').value;
+                const status = document.getElementById('status').value;
+                
+                // Créer un objet candidat
+                const nouveauCandidat = {
+                    nom,
+                    email,
+                    age,
+                    poste,
+                    status
+                };
+                
+                // Récupérer les candidats existants du localStorage ou créer un tableau vide
+                let candidats = JSON.parse(localStorage.getItem('candidats')) || [];
+                
+                // Ajouter le nouveau candidat
+                candidats.push(nouveauCandidat);
+                
+                // Sauvegarder dans le localStorage
+                localStorage.setItem('candidats', JSON.stringify(candidats));
+                
+                // Afficher un message de succès
+                showAlert('Candidat ajouté avec succès !', 'success');
+                
+                // Réinitialiser le formulaire
+                form.reset();
+                
+                // Rediriger vers la page des candidats après 2 secondes
+                setTimeout(() => {
+                    window.location.href = 'TalentJumpCandidats.html';
+                }, 2000);
+            });
+            
+            // Fonction pour afficher une alerte
+            function showAlert(message, type) {
+                alertMessage.textContent = message;
+                alertMessage.className = `alert alert-${type}`;
+                alertMessage.style.display = 'block';
+                
+                // Faire disparaître l'alerte après 5 secondes
+                setTimeout(() => {
+                    alertMessage.style.display = 'none';
+                }, 5000);
+            }
+        });
+    </script>
+</body>
+</html>
