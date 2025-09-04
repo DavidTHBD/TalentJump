@@ -1,7 +1,6 @@
-**3\. Documentation et Code**
+**\. Documentation et Code**
 
-* Un **dépôt Git** partagé par le groupe avec des commits réguliers et explicites.  
-* Un fichier README.md complet (description, répartition des tâches, instructions d'exécution, choix de conception).
+Installez les requirements afin de faire fonctionner votre serveur flask en utilisant la commande suivante dans votre console : **pip install -r requirements.txt**
 
 ## 
 

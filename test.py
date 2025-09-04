@@ -12,7 +12,7 @@ def ajouter_candidat():
         f.write(json.dumps(data) + "\n")
     return jsonify({"message": "Candidat ajouté avec succès"}), 200
 
-@app.route('/candidats', methods=['GET'])  # ✅ Cette route est essentielle
+@app.route('/candidats', methods=['GET'])  
 def get_candidats():
     candidats = []
     try:
