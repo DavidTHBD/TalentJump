@@ -389,7 +389,28 @@
         </div>
     </nav>
 
-    
+    <script>
+  function supprimerCandidat(id) {
+    fetch(`http://127.0.0.1:5000/supprimer_candidat/${id}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => {
+        if (response.ok) {
+            alert('Candidat supprimé avec succès !');
+            window.location.reload();
+        } else {
+            alert('Erreur lors de la suppression.');
+        }
+    })
+    .catch(error => {
+        console.error('Erreur :', error);
+    });
+}
+
+    </script>
     <!-- Candidat Section -->
     <section class="candidat-section">
         <h1 class="section-title">Nos Candidats</h1>
@@ -401,12 +422,10 @@
                         <?php echo substr($candidat['nom'], 0, 1); ?>
                     </div>
                     <div class="card-actions">
-                        <a href="edit_candidat.php?id=<?php echo $candidat['id']; ?>" class="card-action-btn">
-                            <i class="fas fa-edit"></i>
-                        </a>
-                        <a href="delete_candidat.php?id=<?php echo $candidat['id']; ?>" class="card-action-btn" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce candidat ?');">
+                        <a href="#" class="card-action-btn" onclick="">
                             <i class="fas fa-trash-alt"></i>
                         </a>
+
                     </div>
                     <div class="candidat-info">
                         <h3><?php echo $candidat['nom']; ?></h3>
@@ -449,14 +468,14 @@
                 <a id="edit-link" href="#" class="action-btn edit-btn">
                     <i class="fas fa-edit"></i> Modifier
                 </a>
-                <a id="delete-link" href="#" class="action-btn delete-btn" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce candidat ?');">
-                    <i class="fas fa-trash-alt"></i> Supprimer
+
                 </a>
             </div>
         </div>
     </div>
 
 <script>
+
 document.addEventListener('DOMContentLoaded', function () {
     fetch('http://localhost:5000/candidats')
         .then(response => response.json())
@@ -467,8 +486,7 @@ document.addEventListener('DOMContentLoaded', function () {
             data.forEach((candidat, index) => {
                 const card = document.createElement('div');
                 card.className = 'candidat-card';
-                card.dataset.id = index;
-
+                card.dataset.id = candidat.id;
                 card.innerHTML = `
                     <div class="candidat-image">
                         ${candidat.nom.charAt(0).toUpperCase()}
@@ -477,9 +495,10 @@ document.addEventListener('DOMContentLoaded', function () {
                         <a href="edit_candidat.php?id=${index}" class="card-action-btn">
                             <i class="fas fa-edit"></i>
                         </a>
-                        <a href="delete_candidat.php?id=${index}" class="card-action-btn" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce candidat ?');">
+                        <a href="#" class="card-action-btn" onclick="supprimerCandidat(${candidat.id}); return false;">
                             <i class="fas fa-trash-alt"></i>
                         </a>
+                        
                     </div>
                     <div class="candidat-info">
                         <h3>${candidat.nom}</h3>
@@ -508,7 +527,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 return "Statut inconnu";
         }
     }
-});
+
+}
+);
 </script>
 
 
