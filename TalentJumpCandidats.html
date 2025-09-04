@@ -107,6 +107,71 @@
             animation: fadeInDown 1s ease;
         }
 
+        /* Filtres et recherche */
+        .filters-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            justify-content: center;
+            animation: fadeInDown 0.8s ease;
+        }
+
+        .search-container {
+            display: flex;
+            flex: 1;
+            min-width: 250px;
+            max-width: 400px;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.8rem 1rem 0.8rem 3rem;
+            font-size: 1rem;
+            background-color: var(--input-bg);
+            border: 1px solid var(--input-border);
+            border-radius: 8px;
+            color: var(--light);
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 2px rgba(255, 77, 77, 0.2);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .filter-select {
+            padding: 0.8rem 2.5rem 0.8rem 1rem;
+            font-size: 1rem;
+            background-color: var(--input-bg);
+            border: 1px solid var(--input-border);
+            border-radius: 8px;
+            color: var(--light);
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 2px rgba(255, 77, 77, 0.2);
+        }
+
         .candidat-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -166,7 +231,7 @@
             margin-top: 0.5rem;
         }
 
-        .status-en-attente {
+        .status-en_attente {
             background-color: #FFC107;
             color: var(--dark);
         }
@@ -337,6 +402,55 @@
             background-color: #c82333;
         }
 
+        /* Formulaire dans le modal */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            font-size: 1rem;
+            background-color: var(--input-bg);
+            border: 1px solid var(--input-border);
+            border-radius: 8px;
+            color: var(--light);
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 2px rgba(255, 77, 77, 0.2);
+        }
+
+        .form-select {
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 1em;
+        }
+
+        /* Message de résultat vide */
+        .no-results {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 3rem;
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1.2rem;
+        }
+
         /* Animations */
         @keyframes fadeInDown {
             from {
@@ -374,6 +488,15 @@
                 width: 95%;
                 padding: 1.5rem;
             }
+
+            .filters-container {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .search-container {
+                max-width: 100%;
+            }
         }
     </style>
 </head>
@@ -384,106 +507,206 @@
             <div class="nav-links">
                 <a href="TalentJumpAcceuil.html">Acceuil</a>
                 <a href="TalentJumpCandidats.html">Candidats</a>
+                <a href="TalentJumpStat.html">Statistiques</a>
                 <a href="TalentJumpAjouter.html">Ajouter</a>
             </div>
         </div>
     </nav>
 
-    <script>
-  function supprimerCandidat(id) {
-    fetch(`http://127.0.0.1:5000/supprimer_candidat/${id}`, {
-        method: 'DELETE',
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    })
-    .then(response => {
-        if (response.ok) {
-            alert('Candidat supprimé avec succès !');
-            window.location.reload();
-        } else {
-            alert('Erreur lors de la suppression.');
-        }
-    })
-    .catch(error => {
-        console.error('Erreur :', error);
-    });
-}
-
-    </script>
     <!-- Candidat Section -->
     <section class="candidat-section">
         <h1 class="section-title">Nos Candidats</h1>
+        
+        <!-- Filtres et recherche -->
+        <div class="filters-container">
+            <div class="search-container">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" id="search-input" class="search-input" placeholder="Rechercher un candidat...">
+            </div>
+            
+            <select id="status-filter" class="filter-select">
+                <option value="all">Tous les statuts</option>
+                <option value="en_attente">En attente</option>
+                <option value="accepte">Acceptés</option>
+                <option value="refuse">Refusés</option>
+            </select>
+            
+            <select id="age-sort" class="filter-select">
+                <option value="none">Tri par âge</option>
+                <option value="asc">Âge croissant</option>
+                <option value="desc">Âge décroissant</option>
+            </select>
+        </div>
+        
         <div class="candidat-grid" id="candidat-grid">
-            <!-- Les cartes de candidats sont générées par le backend -->
-            <?php foreach ($candidats as $candidat): ?>
-                <div class="candidat-card" data-id="<?php echo $candidat['id']; ?>">
-                    <div class="candidat-image">
-                        <?php echo substr($candidat['nom'], 0, 1); ?>
-                    </div>
-                    <div class="card-actions">
-                        <a href="#" class="card-action-btn" onclick="">
-                            <i class="fas fa-trash-alt"></i>
-                        </a>
-
-                    </div>
-                    <div class="candidat-info">
-                        <h3><?php echo $candidat['nom']; ?></h3>
-                        <p><?php echo $candidat['email']; ?></p>
-                        <p>Poste visé: <?php echo $candidat['poste']; ?></p>
-                        <div class="candidat-status status-<?php echo $candidat['status']; ?>">
-                            <?php 
-                                switch($candidat['status']) {
-                                    case 'en_attente':
-                                        echo 'En attente d\'entretien';
-                                        break;
-                                    case 'accepte':
-                                        echo 'Accepté';
-                                        break;
-                                    case 'refuse':
-                                        echo 'Refusé';
-                                        break;
-                                }
-                            ?>
-                        </div>
-                    </div>
-                </div>
-            <?php endforeach; ?>
+            <!-- Les cartes de candidats sont générées dynamiquement -->
         </div>
     </section>
 
-    <!-- Modal Détails du Candidat -->
-    <div id="candidat-modal" class="modal">
+    <!-- Modal Overlay -->
+    <div id="modal-overlay"></div>
+
+    <!-- Modal Modification du Candidat -->
+    <div id="edit-modal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2 id="modal-nom"></h2>
-                <button class="close-button" id="close-modal">&times;</button>
+                <h2>Modifier le candidat</h2>
+                <button class="close-button" id="close-edit-modal">&times;</button>
             </div>
-            <p id="modal-email"></p>
-            <p id="modal-age"></p>
-            <p id="modal-poste"></p>
-            <div id="modal-status" class="modal-status"></div>
-            
-            <div style="display: flex; justify-content: space-between; margin-top: 2rem;">
-                <a id="edit-link" href="#" class="action-btn edit-btn">
-                    <i class="fas fa-edit"></i> Modifier
-                </a>
-
-                </a>
-            </div>
+            <form id="edit-form">
+                <input type="hidden" id="edit-id">
+                <div class="form-group">
+                    <label for="edit-nom">Nom complet</label>
+                    <input type="text" id="edit-nom" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-email">Email</label>
+                    <input type="email" id="edit-email" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-age">Âge</label>
+                    <input type="number" id="edit-age" class="form-control" min="18" max="100" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-poste">Poste visé</label>
+                    <input type="text" id="edit-poste" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-status">Statut</label>
+                    <select id="edit-status" class="form-control form-select" required>
+                        <option value="en_attente">En attente d'entretien</option>
+                        <option value="accepte">Accepté</option>
+                        <option value="refuse">Refusé</option>
+                    </select>
+                </div>
+                <button type="submit" class="action-btn edit-btn">Enregistrer les modifications</button>
+            </form>
         </div>
     </div>
 
-<script>
+    <script>
+        // Fonction pour supprimer un candidat
+        function supprimerCandidat(id) {
+            if (confirm('Êtes-vous sûr de vouloir supprimer ce candidat ?')) {
+                fetch(`http://127.0.0.1:5000/supprimer_candidat/${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => {
+                    if (response.ok) {
+                        alert('Candidat supprimé avec succès !');
+                        window.location.reload();
+                    } else {
+                        alert('Erreur lors de la suppression.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Erreur :', error);
+                });
+            }
+        }
 
-document.addEventListener('DOMContentLoaded', function () {
-    fetch('http://localhost:5000/candidats')
-        .then(response => response.json())
-        .then(data => {
+        // Fonction pour ouvrir le modal d'édition
+        function ouvrirModalEdition(candidat) {
+            // Remplir le formulaire avec les données du candidat
+            document.getElementById('edit-id').value = candidat.id;
+            document.getElementById('edit-nom').value = candidat.nom;
+            document.getElementById('edit-email').value = candidat.email;
+            document.getElementById('edit-age').value = candidat.age;
+            document.getElementById('edit-poste').value = candidat.poste;
+            document.getElementById('edit-status').value = candidat.status;
+            
+            // Afficher le modal et l'overlay
+            document.getElementById('edit-modal').classList.add('active');
+            document.getElementById('modal-overlay').classList.add('active');
+        }
+
+        // Fonction pour fermer le modal d'édition
+        function fermerModalEdition() {
+            document.getElementById('edit-modal').classList.remove('active');
+            document.getElementById('modal-overlay').classList.remove('active');
+        }
+
+        // Fonction pour mettre à jour un candidat
+        function mettreAJourCandidat(id, candidatData) {
+            fetch(`http://127.0.0.1:5000/modifier_candidat/${id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(candidatData)
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert('Candidat modifié avec succès !');
+                    window.location.reload();
+                } else {
+                    alert('Erreur lors de la modification.');
+                }
+            })
+            .catch(error => {
+                console.error('Erreur :', error);
+            });
+        }
+
+        // Fonction pour obtenir le texte du statut
+        function getStatusText(status) {
+            switch (status) {
+                case 'en_attente':
+                    return "En attente d'entretien";
+                case 'accepte':
+                    return "Accepté";
+                case 'refuse':
+                    return "Refusé";
+                default:
+                    return "Statut inconnu";
+            }
+        }
+
+        // Fonction pour filtrer et afficher les candidats
+        function filtrerEtAfficherCandidats() {
+            const searchTerm = document.getElementById('search-input').value.toLowerCase();
+            const statusFilter = document.getElementById('status-filter').value;
+            const ageSort = document.getElementById('age-sort').value;
+            
+            // Filtrer les candidats
+            let candidatsFiltres = window.candidatsData.filter(candidat => {
+                // Filtre par nom
+                const matchNom = candidat.nom.toLowerCase().includes(searchTerm);
+                
+                // Filtre par statut
+                const matchStatus = statusFilter === 'all' || candidat.status === statusFilter;
+                
+                return matchNom && matchStatus;
+            });
+            
+            // Trier les candidats par âge si nécessaire
+            if (ageSort !== 'none') {
+                candidatsFiltres.sort((a, b) => {
+                    if (ageSort === 'asc') {
+                        return a.age - b.age;
+                    } else {
+                        return b.age - a.age;
+                    }
+                });
+            }
+            
+            // Afficher les candidats filtrés
             const grid = document.getElementById('candidat-grid');
             grid.innerHTML = ''; // Nettoyer avant d'ajouter
-
-            data.forEach((candidat, index) => {
+            
+            if (candidatsFiltres.length === 0) {
+                // Afficher un message si aucun résultat
+                const noResults = document.createElement('div');
+                noResults.className = 'no-results';
+                noResults.innerHTML = '<i class="fas fa-search" style="font-size: 2rem; margin-bottom: 1rem;"></i><p>Aucun candidat ne correspond à votre recherche.</p>';
+                grid.appendChild(noResults);
+                return;
+            }
+            
+            candidatsFiltres.forEach(candidat => {
                 const card = document.createElement('div');
                 card.className = 'candidat-card';
                 card.dataset.id = candidat.id;
@@ -492,17 +715,17 @@ document.addEventListener('DOMContentLoaded', function () {
                         ${candidat.nom.charAt(0).toUpperCase()}
                     </div>
                     <div class="card-actions">
-                        <a href="edit_candidat.php?id=${index}" class="card-action-btn">
+                        <a href="#" class="card-action-btn edit-candidat" data-id="${candidat.id}">
                             <i class="fas fa-edit"></i>
                         </a>
                         <a href="#" class="card-action-btn" onclick="supprimerCandidat(${candidat.id}); return false;">
                             <i class="fas fa-trash-alt"></i>
                         </a>
-                        
                     </div>
                     <div class="candidat-info">
                         <h3>${candidat.nom}</h3>
                         <p>${candidat.email}</p>
+                        <p>Âge: ${candidat.age} ans</p>
                         <p>Poste visé: ${candidat.poste}</p>
                         <div class="candidat-status status-${candidat.status}">
                             ${getStatusText(candidat.status)}
@@ -512,26 +735,61 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 grid.appendChild(card);
             });
-        })
-        .catch(error => console.error('Erreur lors du chargement des candidats :', error));
-
-    function getStatusText(status) {
-        switch (status) {
-            case 'en_attente':
-                return "En attente d'entretien";
-            case 'accepte':
-                return "Accepté";
-            case 'refuse':
-                return "Refusé";
-            default:
-                return "Statut inconnu";
+            
+            // Ajouter des écouteurs d'événements pour les boutons d'édition
+            document.querySelectorAll('.edit-candidat').forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const candidatId = parseInt(this.getAttribute('data-id'));
+                    const candidat = window.candidatsData.find(c => c.id === candidatId);
+                    if (candidat) {
+                        ouvrirModalEdition(candidat);
+                    }
+                });
+            });
         }
-    }
 
-}
-);
-</script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Récupérer et afficher les candidats
+            fetch('http://localhost:5000/candidats')
+                .then(response => response.json())
+                .then(data => {
+                    // Stocker les données des candidats pour une utilisation ultérieure
+                    window.candidatsData = data;
+                    
+                    // Afficher initialement tous les candidats
+                    filtrerEtAfficherCandidats();
+                    
+                    // Ajouter des écouteurs d'événements pour les filtres
+                    document.getElementById('search-input').addEventListener('input', filtrerEtAfficherCandidats);
+                    document.getElementById('status-filter').addEventListener('change', filtrerEtAfficherCandidats);
+                    document.getElementById('age-sort').addEventListener('change', filtrerEtAfficherCandidats);
+                })
+                .catch(error => console.error('Erreur lors du chargement des candidats :', error));
 
+            // Fermer le modal quand on clique sur le bouton de fermeture
+            document.getElementById('close-edit-modal').addEventListener('click', fermerModalEdition);
 
+            // Fermer le modal quand on clique sur l'overlay
+            document.getElementById('modal-overlay').addEventListener('click', fermerModalEdition);
+
+            // Gérer la soumission du formulaire d'édition
+            document.getElementById('edit-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const id = document.getElementById('edit-id').value;
+                const candidatData = {
+                    id: parseInt(id), // Conserver l'ID
+                    nom: document.getElementById('edit-nom').value,
+                    email: document.getElementById('edit-email').value,
+                    age: parseInt(document.getElementById('edit-age').value),
+                    poste: document.getElementById('edit-poste').value,
+                    status: document.getElementById('edit-status').value
+                };
+
+                mettreAJourCandidat(id, candidatData);
+            });
+        });
+    </script>
 </body>
 </html>
