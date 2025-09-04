@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Statistiques - TalentJumpMusic</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary-color: #000000;
+            --secondary-color: #ff4d4d;
+            --dark: #111111;
+            --light: #FFFFFF;
+            --gray: #f5f5f5;
+            --card-bg: #1a1a1a;
+            --card-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            --input-bg: #2a2a2a;
+            --input-border: rgba(255, 255, 255, 0.1);
+            --chart-color-1: #ff4d4d;
+            --chart-color-2: #4d79ff;
+            --chart-color-3: #4dff77;
+            --chart-color-4: #ffd24d;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: var(--dark);
+            color: var(--light);
+            min-height: 100vh;
+            background: linear-gradient(45deg, rgba(0,0,0,0.9), rgba(0,0,0,0.7)), url("https://giffiles.alphacoders.com/308/30816.gif");
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+
+        /* Navigation */
+        nav {
+            background-color: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            padding: 1rem;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .nav-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 3rem;
+        }
+
+        .nav-links a {
+            color: var(--light);
+            text-decoration: none;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.9rem;
+            position: relative;
+            padding: 0.5rem 0;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Stats Section */
+        .stats-section {
+            padding: 8rem 2rem 4rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-align: center;
+            background: linear-gradient(90deg, var(--light), var(--secondary-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: fadeInDown 1s ease;
+        }
+
+        /* Stats Cards */
+        .stats-overview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+            animation: fadeInUp 0.8s ease;
+        }
+
+        .stat-card {
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            box-shadow: var(--card-shadow);
+            padding: 1.5rem;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(255, 77, 77, 0.2);
+        }
+
+        .stat-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, var(--light), var(--secondary-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--light);
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.7);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Charts Container */
+        .charts-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+            animation: fadeInUp 1s ease;
+        }
+
+        @media (max-width: 768px) {
+            .charts-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .chart-card {
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            box-shadow: var(--card-shadow);
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .chart-title {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            color: var(--light);
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+            width: 100%;
+        }
+
+        /* Tableau des candidats récents */
+        .recent-candidates {
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            box-shadow: var(--card-shadow);
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            animation: fadeInUp 1.2s ease;
+            overflow-x: auto;
+        }
+
+        .table-title {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            color: var(--light);
+        }
+
+        .candidates-table {
+            width: 100%;
+            border-collapse: collapse;
+            color: var(--light);
+        }
+
+        .candidates-table th {
+            background-color: rgba(0, 0, 0, 0.3);
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+        }
+
+        .candidates-table td {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .candidates-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .candidates-table tr:hover td {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status-en_attente {
+            background-color: #FFC107;
+            color: var(--dark);
+        }
+
+        .status-accepte {
+            background-color: #28A745;
+            color: var(--light);
+        }
+
+        .status-refuse {
+            background-color: #DC3545;
+            color: var(--light);
+        }
+
+        /* Animations */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Loader */
+        .loader-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 300px;
+        }
+
+        .loader {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            border-top-color: var(--secondary-color);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-content">
+            <div class="nav-links">
+                <a href="TalentJumpAcceuil.html">Acceuil</a>
+                <a href="TalentJumpCandidats.html">Candidats</a>
+                <a href="TalentJumpStat.html">Statistiques</a>
+                <a href="TalentJumpAjouter.html">Ajouter</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Stats Section -->
+    <section class="stats-section">
+        <h1 class="section-title">Statistiques des Candidats</h1>
+        
+        <!-- Stats Overview Cards -->
+        <div class="stats-overview">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="stat-value" id="total-candidats">0</div>
+                <div class="stat-label">Candidats totaux</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-hourglass-half"></i>
+                </div>
+                <div class="stat-value" id="en-attente">0</div>
+                <div class="stat-label">En attente</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="stat-value" id="acceptes">0</div>
+                <div class="stat-label">Acceptés</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-times-circle"></i>
+                </div>
+                <div class="stat-value" id="refuses">0</div>
+                <div class="stat-label">Refusés</div>
+            </div>
+        </div>
+        
+        <!-- Charts -->
+        <div class="charts-container">
+            <div class="chart-card">
+                <h2 class="chart-title">Répartition par statut</h2>
+                <div class="chart-container">
+                    <canvas id="status-chart"></canvas>
+                </div>
+            </div>
+            
+            <div class="chart-card">
+                <h2 class="chart-title">Répartition par âge</h2>
+                <div class="chart-container">
+                    <canvas id="age-chart"></canvas>
+                </div>
+            </div>
+            
+            <div class="chart-card">
+                <h2 class="chart-title">Postes les plus demandés</h2>
+                <div class="chart-container">
+                    <canvas id="poste-chart"></canvas>
+                </div>
+            </div>
+            
+            <div class="chart-card">
+                <h2 class="chart-title">Évolution des candidatures</h2>
+                <div class="chart-container">
+                    <canvas id="evolution-chart"></canvas>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Recent Candidates Table -->
+        <div class="recent-candidates">
+            <h2 class="table-title">Candidats récents</h2>
+            <table class="candidates-table">
+                <thead>
+                    <tr>
+                        <th>Nom</th>
+                        <th>Email</th>
+                        <th>Âge</th>
+                        <th>Poste</th>
+                        <th>Statut</th>
+                    </tr>
+                </thead>
+                <tbody id="recent-candidates-body">
+                    <!-- Données chargées dynamiquement -->
+                    <tr>
+                        <td colspan="5">
+                            <div class="loader-container">
+                                <div class="loader"></div>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <script>
+        // Fonction pour obtenir le texte du statut
+        function getStatusText(status) {
+            switch (status) {
+                case 'en_attente':
+                    return "En attente d'entretien";
+                case 'accepte':
+                    return "Accepté";
+                case 'refuse':
+                    return "Refusé";
+                default:
+                    return "Statut inconnu";
+            }
+        }
+        
+        // Fonction pour grouper les candidats par tranche d'âge
+        function groupByAgeRange(candidats) {
+            const ageGroups = {
+                '18-25': 0,
+                '26-35': 0,
+                '36-45': 0,
+                '46+': 0
+            };
+            
+            candidats.forEach(candidat => {
+                const age = candidat.age;
+                if (age >= 18 && age <= 25) {
+                    ageGroups['18-25']++;
+                } else if (age >= 26 && age <= 35) {
+                    ageGroups['26-35']++;
+                } else if (age >= 36 && age <= 45) {
+                    ageGroups['36-45']++;
+                } else if (age >= 46) {
+                    ageGroups['46+']++;
+                }
+            });
+            
+            return ageGroups;
+        }
+        
+        // Fonction pour compter les occurrences des postes
+        function countPostes(candidats) {
+            const postesCount = {};
+            
+            candidats.forEach(candidat => {
+                const poste = candidat.poste;
+                if (postesCount[poste]) {
+                    postesCount[poste]++;
+                } else {
+                    postesCount[poste] = 1;
+                }
+            });
+            
+            // Trier par nombre d'occurrences et prendre les 5 premiers
+            const sortedPostes = Object.entries(postesCount)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 5);
+            
+            return {
+                labels: sortedPostes.map(item => item[0]),
+                counts: sortedPostes.map(item => item[1])
+            };
+        }
+        
+        // Fonction pour simuler l'évolution des candidatures sur les 6 derniers mois
+        function simulateEvolution(candidats) {
+            const months = [
+                'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
+                'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'
+            ];
+            
+            const currentDate = new Date();
+            const currentMonth = currentDate.getMonth();
+            
+            // Récupérer les 6 derniers mois
+            const lastSixMonths = [];
+            for (let i = 5; i >= 0; i--) {
+                const monthIndex = (currentMonth - i + 12) % 12;
+                lastSixMonths.push(months[monthIndex]);
+            }
+            
+            // Simuler des données d'évolution
+            // Dans un cas réel, vous utiliseriez des dates de candidature réelles
+            const evolution = lastSixMonths.map((month, index) => {
+                // Simulation simple: plus de candidats récemment
+                const base = Math.floor(candidats.length / 6);
+                const random = Math.floor(Math.random() * 5);
+                return base + random + index * 2;
+            });
+            
+            return {
+                labels: lastSixMonths,
+                data: evolution
+            };
+        }
+        
+        // Fonction pour initialiser le graphique de statut
+        function initStatusChart(candidats) {
+            const statusCounts = {
+                'en_attente': 0,
+                'accepte': 0,
+                'refuse': 0
+            };
+            
+            candidats.forEach(candidat => {
+                if (statusCounts[candidat.status] !== undefined) {
+                    statusCounts[candidat.status]++;
+                }
+            });
+            
+            const ctx = document.getElementById('status-chart').getContext('2d');
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['En attente', 'Acceptés', 'Refusés'],
+                    datasets: [{
+                        data: [statusCounts.en_attente, statusCounts.accepte, statusCounts.refuse],
+                        backgroundColor: ['#FFC107', '#28A745', '#DC3545'],
+                        borderColor: ['#FFC107', '#28A745', '#DC3545'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: 'white'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Fonction pour initialiser le graphique d'âge
+        function initAgeChart(candidats) {
+            const ageGroups = groupByAgeRange(candidats);
+            
+            const ctx = document.getElementById('age-chart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(ageGroups),
+                    datasets: [{
+                        label: 'Nombre de candidats',
+                        data: Object.values(ageGroups),
+                        backgroundColor: '#4d79ff',
+                        borderColor: '#4d79ff',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                color: 'white'
+                            },
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: 'white'
+                            },
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Fonction pour initialiser le graphique des postes
+        function initPosteChart(candidats) {
+            const postesData = countPostes(candidats);
+            
+            const ctx = document.getElementById('poste-chart').getContext('2d');
+            new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: postesData.labels,
+                    datasets: [{
+                        data: postesData.counts,
+                        backgroundColor: [
+                            '#ff4d4d', '#4d79ff', '#4dff77', '#ffd24d', '#ff4dd2'
+                        ],
+                        borderColor: [
+                            '#ff4d4d', '#4d79ff', '#4dff77', '#ffd24d', '#ff4dd2'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: 'white'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Fonction pour initialiser le graphique d'évolution
+        function initEvolutionChart(candidats) {
+            const evolutionData = simulateEvolution(candidats);
+            
+            const ctx = document.getElementById('evolution-chart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: evolutionData.labels,
+                    datasets: [{
+                        label: 'Nombre de candidatures',
+                        data: evolutionData.data,
+                        backgroundColor: 'rgba(77, 255, 119, 0.2)',
+                        borderColor: '#4dff77',
+                        borderWidth: 2,
+                        tension: 0.3,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                color: 'white'
+                            },
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: 'white'
+                            },
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: 'white'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Fonction pour mettre à jour les statistiques
+        function updateStats(candidats) {
+            // Mettre à jour les compteurs
+            document.getElementById('total-candidats').textContent = candidats.length;
+            
+            const enAttente = candidats.filter(c => c.status === 'en_attente').length;
+            const acceptes = candidats.filter(c => c.status === 'accepte').length;
+            const refuses = candidats.filter(c => c.status === 'refuse').length;
+            
+            document.getElementById('en-attente').textContent = enAttente;
+            document.getElementById('acceptes').textContent = acceptes;
+            document.getElementById('refuses').textContent = refuses;
+            
+            // Mettre à jour le tableau des candidats récents
+            const tbody = document.getElementById('recent-candidates-body');
+            tbody.innerHTML = '';
+            
+            // Prendre les 5 derniers candidats (dans un cas réel, on trierait par date)
+            const recentCandidats = [...candidats].slice(-5);
+            
+            recentCandidats.forEach(candidat => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${candidat.nom}</td>
+                    <td>${candidat.email}</td>
+                    <td>${candidat.age} ans</td>
+                    <td>${candidat.poste}</td>
+                    <td><span class="status-badge status-${candidat.status}">${getStatusText(candidat.status)}</span></td>
+                `;
+                tbody.appendChild(tr);
+            });
+            
+            // Initialiser les graphiques
+            initStatusChart(candidats);
+            initAgeChart(candidats);
+            initPosteChart(candidats);
+            initEvolutionChart(candidats);
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            // Charger les données des candidats
+            fetch('http://localhost:5000/candidats')
+                .then(response => response.json())
+                .then(data => {
+                    updateStats(data);
+                })
+                .catch(error => {
+                    console.error('Erreur lors du chargement des candidats :', error);
+                    // En cas d'erreur, afficher un message
+                    document.querySelectorAll('.chart-container').forEach(container => {
+                        container.innerHTML = '<div style="text-align: center; padding: 2rem; color: rgba(255, 255, 255, 0.7);">Erreur de chargement des données</div>';
+                    });
+                    
+                    document.getElementById('recent-candidates-body').innerHTML = '<tr><td colspan="5" style="text-align: center;">Erreur de chargement des données</td></tr>';
+                });
+        });
+    </script>
+</body>
+</html>
