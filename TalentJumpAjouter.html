@@ -298,63 +298,64 @@
         </div>
     </section>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const form = document.getElementById('candidat-form');
-            const alertMessage = document.getElementById('alert-message');
-            
-            form.addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                // Récupérer les valeurs du formulaire
-                const nom = document.getElementById('nom').value;
-                const email = document.getElementById('email').value;
-                const age = parseInt(document.getElementById('age').value);
-                const poste = document.getElementById('poste').value;
-                const status = document.getElementById('status').value;
-                
-                // Créer un objet candidat
-                const nouveauCandidat = {
-                    nom,
-                    email,
-                    age,
-                    poste,
-                    status
-                };
-                
-                // Récupérer les candidats existants du localStorage ou créer un tableau vide
-                let candidats = JSON.parse(localStorage.getItem('candidats')) || [];
-                
-                // Ajouter le nouveau candidat
-                candidats.push(nouveauCandidat);
-                
-                // Sauvegarder dans le localStorage
-                localStorage.setItem('candidats', JSON.stringify(candidats));
-                
-                // Afficher un message de succès
-                showAlert('Candidat ajouté avec succès !', 'success');
-                
-                // Réinitialiser le formulaire
-                form.reset();
-                
-                // Rediriger vers la page des candidats après 2 secondes
-                setTimeout(() => {
-                    window.location.href = 'TalentJumpCandidats.html';
-                }, 2000);
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('candidat-form');
+        const alertMessage = document.getElementById('alert-message');
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const nom = document.getElementById('nom').value;
+            const email = document.getElementById('email').value;
+            const age = parseInt(document.getElementById('age').value);
+            const poste = document.getElementById('poste').value;
+            const status = document.getElementById('status').value;
+            const linkedin = document.getElementById('linkedin').value;
+
+
+            const nouveauCandidat = {
+                nom,
+                email,
+                age,
+                poste,
+                status,
+                linkedin
+            };
+
+            fetch('http://127.0.0.1:5000/ajouter_candidat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(nouveauCandidat)
+            })
+            .then(response => {
+                if (response.ok) {
+                    showAlert('Candidat ajouté avec succès !', 'success');
+                    form.reset();
+                    setTimeout(() => {
+                        window.location.href = 'TalentJumpCandidats.html';
+                    }, 2000);
+                } else {
+                    throw new Error('Erreur lors de l\'ajout du candidat.');
+                }
+            })
+            .catch(error => {
+                showAlert(error.message, 'danger');
             });
-            
-            // Fonction pour afficher une alerte
-            function showAlert(message, type) {
-                alertMessage.textContent = message;
-                alertMessage.className = `alert alert-${type}`;
-                alertMessage.style.display = 'block';
-                
-                // Faire disparaître l'alerte après 5 secondes
-                setTimeout(() => {
-                    alertMessage.style.display = 'none';
-                }, 5000);
-            }
         });
-    </script>
+
+        function showAlert(message, type) {
+            alertMessage.textContent = message;
+            alertMessage.className = `alert alert-${type}`;
+            alertMessage.style.display = 'block';
+
+            setTimeout(() => {
+                alertMessage.style.display = 'none';
+            }, 5000);
+        }
+    });
+</script>
 </body>
 </html>
