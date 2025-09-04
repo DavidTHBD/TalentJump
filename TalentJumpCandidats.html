@@ -389,6 +389,7 @@
         </div>
     </nav>
 
+    
     <!-- Candidat Section -->
     <section class="candidat-section">
         <h1 class="section-title">Nos Candidats</h1>
@@ -455,85 +456,61 @@
         </div>
     </div>
 
-    <!-- Overlay pour le modal -->
-    <div id="modal-overlay"></div>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    fetch('http://localhost:5000/candidats')
+        .then(response => response.json())
+        .then(data => {
+            const grid = document.getElementById('candidat-grid');
+            grid.innerHTML = ''; // Nettoyer avant d'ajouter
 
-    <script>
-        // Uniquement pour la gestion du modal et localStorage
-        document.addEventListener('DOMContentLoaded', function() {
-            // Éléments DOM pour le modal
-            const modal = document.getElementById("candidat-modal");
-            const overlay = document.getElementById("modal-overlay");
-            const closeButton = document.getElementById("close-modal");
-            const editLink = document.getElementById("edit-link");
-            const deleteLink = document.getElementById("delete-link");
-            
-            // Ajouter des écouteurs d'événements pour ouvrir le modal
-            const candidatCards = document.querySelectorAll('.candidat-card');
-            candidatCards.forEach(card => {
-                card.addEventListener('click', function(e) {
-                    // Ne pas ouvrir le modal si on clique sur les boutons d'action
-                    if (e.target.closest('.card-actions')) return;
-                    
-                    const candidatId = this.dataset.id;
-                    const nom = this.querySelector('h3').textContent;
-                    const email = this.querySelector('p').textContent;
-                    const poste = this.querySelectorAll('p')[1].textContent;
-                    const statusElement = this.querySelector('.candidat-status');
-                    const status = statusElement.textContent;
-                    const statusClass = statusElement.classList[1];
-                    
-                    // Remplir le modal avec les données du candidat
-                    document.getElementById("modal-nom").textContent = nom;
-                    document.getElementById("modal-email").textContent = email;
-                    document.getElementById("modal-poste").textContent = poste;
-                    
-                    const modalStatus = document.getElementById("modal-status");
-                    modalStatus.textContent = status;
-                    modalStatus.className = "modal-status " + statusClass;
-                    
-                    // Mettre à jour les liens d'action
-                    editLink.href = "edit_candidat.php?id=" + candidatId;
-                    deleteLink.href = "delete_candidat.php?id=" + candidatId;
-                    
-                    // Afficher le modal
-                    openModal();
-                });
+            data.forEach((candidat, index) => {
+                const card = document.createElement('div');
+                card.className = 'candidat-card';
+                card.dataset.id = index;
+
+                card.innerHTML = `
+                    <div class="candidat-image">
+                        ${candidat.nom.charAt(0).toUpperCase()}
+                    </div>
+                    <div class="card-actions">
+                        <a href="edit_candidat.php?id=${index}" class="card-action-btn">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        <a href="delete_candidat.php?id=${index}" class="card-action-btn" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce candidat ?');">
+                            <i class="fas fa-trash-alt"></i>
+                        </a>
+                    </div>
+                    <div class="candidat-info">
+                        <h3>${candidat.nom}</h3>
+                        <p>${candidat.email}</p>
+                        <p>Poste visé: ${candidat.poste}</p>
+                        <div class="candidat-status status-${candidat.status}">
+                            ${getStatusText(candidat.status)}
+                        </div>
+                    </div>
+                `;
+
+                grid.appendChild(card);
             });
-            
-            // Fonction pour ouvrir le modal
-            function openModal() {
-                overlay.style.visibility = 'visible';
-                modal.style.visibility = 'visible';
-                setTimeout(() => {
-                    overlay.classList.add('active');
-                    modal.classList.add('active');
-                }, 10);
-                document.body.style.overflow = 'hidden';
-            }
-            
-            // Fonction pour fermer le modal
-            function closeModal() {
-                overlay.classList.remove('active');
-                modal.classList.remove('active');
-                setTimeout(() => {
-                    overlay.style.visibility = 'hidden';
-                    modal.style.visibility = 'hidden';
-                    document.body.style.overflow = 'auto';
-                }, 300);
-            }
-            
-            // Écouteurs d'événements pour fermer le modal
-            closeButton.addEventListener('click', closeModal);
-            overlay.addEventListener('click', closeModal);
-            
-            // Fermer le modal avec la touche Escape
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape' && overlay.classList.contains('active')) {
-                    closeModal();
-                }
-            });
-        });
-    </script>
+        })
+        .catch(error => console.error('Erreur lors du chargement des candidats :', error));
+
+    function getStatusText(status) {
+        switch (status) {
+            case 'en_attente':
+                return "En attente d'entretien";
+            case 'accepte':
+                return "Accepté";
+            case 'refuse':
+                return "Refusé";
+            default:
+                return "Statut inconnu";
+        }
+    }
+});
+</script>
+
+
 </body>
 </html>
