@@ -11,20 +11,16 @@
 Dans le dossier du projet, exécute :
 
 
-pip install requirements.txt
+**pip install flask flask-cors**
 
 ## 2. Lancez le serveur flask
 
-python backend.py
+**python backend.py**
 
 ## 3. Servir la page HTML (Front-end)
 ⚠️ **Ne pas ouvrir le fichier HTML en double-cliquant (sinon Origin: null → erreur CORS).**
 
-Utilise un serveur statique :
-
-Option A – Python
-Dans le dossier contenant TalentJumpCandidats.html :
-python -m http.server 5500
+**python -m http.server 5500**
 
 **Puis ouvre :**
 👉 http://127.0.0.1:5500/TalentJumpAcceuil.html
