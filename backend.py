@@ -77,6 +77,29 @@ def supprimer_candidat(candidat_id: int):
     write_all(nouveaux_candidats)
     return jsonify({"message": "Candidat supprimé avec succès", "id": candidat_id}), 200
 
+    
+@app.route('/modifier_candidat/<int:candidat_id>', methods=['PUT', 'OPTIONS'])
+def modifier_candidat(candidat_id):
+    # Réponse au préflight CORS
+    if request.method == 'OPTIONS':
+        return ('', 204)
+
+    data = request.get_json(force=True, silent=True) or {}
+
+    candidats = read_all()
+    candidat_trouve = False
+
+    for i, c in enumerate(candidats):
+        if c.get("id") == candidat_id:
+            candidats[i] = {**c, **data, "id": candidat_id}  # fusionne les données
+            candidat_trouve = True
+            break
+
+    if not candidat_trouve:
+        return jsonify({"message": "Candidat introuvable", "id": candidat_id}), 404
+
+    write_all(candidats)
+    return jsonify({"message": "Candidat modifié avec succès", "id": candidat_id}), 200
 
 if __name__ == '__main__':
     # IMPORTANT: toutes les routes doivent être définies AVANT ce point
